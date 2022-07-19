@@ -27,7 +27,12 @@ export class LoginComponent implements OnInit {
   }
 
   login() {
-    
+    // const email = this.loginForm.value.email
+    // const password = this.loginForm.value.password
+    const { email, password } = this.loginForm.value
+    this.authService.signInWithEmailAndPassword(email, password).subscribe(
+      () => this.router.navigateByUrl('/todos')
+    )
   }
 
   signInWithGoogle() {
