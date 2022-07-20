@@ -42,6 +42,7 @@ main.main-container {
   
   .done {
     text-decoration: line-through;
+    color: #69F0AE;
   }
   
   #signout {
