@@ -58,6 +58,10 @@ export class AuthService {
 
   signInWithGoogle(){
     const googleProvider = new GoogleAuthProvider()
+    return from(this.authentication.signInWithPopup(googleProvider))
+  }
+  signUpWithGoogle(){
+    const googleProvider = new GoogleAuthProvider()
     return from(this.authentication.signInWithPopup(googleProvider)).pipe(this.saveUserData())
   }
 
