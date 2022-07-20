@@ -25,7 +25,7 @@ export class AuthService {
   }
 
   private saveUserData(){
-    return tap((credentials: firebase.default.auth.UserCredential) => {
+    return tap(async (credentials: firebase.default.auth.UserCredential) => {
       // recuperar o uid do usuario
       const uid = credentials.user?.uid as string;
       // recuperar o email do usuario
@@ -33,9 +33,21 @@ export class AuthService {
 
       const todos: Todo[] = []
 
-      //criação de um novo documento na coleção de ususarios //doc são como as rows no mysql
 
-      // a funcao doc te retorna a referencia para um documento na coleção a partir do seu UID
+      //SELCT * FROM users WHERE email = "usuario@email.com"
+
+      const user = await this.usersCollection.ref.where('email', '==', email).get()//retornar uma promisse
+      .then(//conseguimos pegar os dados da promisse
+        users => {
+          //docs retorna um array com os documentos achados
+          return users.docs[0]
+        }
+      )
+
+      
+      //criação de um novo documento na coleção de ususarios //doc são como as rows no mysql
+      if(user == undefined){
+            // a funcao doc te retorna a referencia para um documento na coleção a partir do seu UID
       // a funcao set atribui valores ao documento que vc está referenciando
       this.usersCollection.doc(uid).set({
         uid: uid,
@@ -45,6 +57,7 @@ export class AuthService {
 
       //envia o email de verificação 
       credentials.user?.sendEmailVerification()
+      }
     })
   }
   signUpWithEmailAndPassword(email: string, password: string){
@@ -56,11 +69,8 @@ export class AuthService {
     return from(this.authentication.signInWithEmailAndPassword(email, password))
   }
 
+
   signInWithGoogle(){
-    const googleProvider = new GoogleAuthProvider()
-    return from(this.authentication.signInWithPopup(googleProvider))
-  }
-  signUpWithGoogle(){
     const googleProvider = new GoogleAuthProvider()
     return from(this.authentication.signInWithPopup(googleProvider)).pipe(this.saveUserData())
   }
