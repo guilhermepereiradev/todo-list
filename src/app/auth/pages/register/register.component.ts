@@ -42,8 +42,8 @@ export class RegisterComponent implements OnInit {
     )
   }
 
-  signUpWithGoogle() {
-    this.authServices.signUpWithGoogle().subscribe(
+  signInWithGoogle() {
+    this.authServices.signInWithGoogle().subscribe(
       () => {
         this.router.navigateByUrl('/todos')
       }
