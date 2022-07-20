@@ -1,3 +1,4 @@
+import { ThisReceiver } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -36,15 +37,44 @@ export class TodosComponent implements OnInit {
   }
 
   create(): void {
-
+    const todo: Todo = this.todoForm.value
+    this.todosService.createTodo(todo).subscribe(
+      () => {
+        this.todoForm.reset()//posso passar um obj com os valores
+        this.snackbar.open("Tarefa salva com sucesso", "OK",{
+          duration: 5000,
+          horizontalPosition: 'right',
+          verticalPosition: 'top'
+        })
+        this.loadTodos()
+      }
+    )
   }
 
   delete(todo: Todo): void {
-
+    this.todosService.deleteTodo(todo).subscribe(
+      () => {
+        this.snackbar.open("Tarefa deletado com sucesso", "OK", {
+          duration: 5000,
+          horizontalPosition: 'right',
+          verticalPosition: 'top'
+        })
+        this.loadTodos()
+      }
+    )
   }
 
   toggleDone(todo: Todo): void {
-
+    todo.done = !todo.done
+    this.todosService.updateTodo(todo).subscribe(
+      () => {
+        this.snackbar.open("Tarefa alterado com sucesso", "OK", {
+          duration: 5000,
+          horizontalPosition: 'right',
+          verticalPosition: 'top'
+        })
+        this.loadTodos()
+      })
   }
 
   signOut(): void {
